@@ -17,7 +17,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".module.dartsround.DartsRoundGame"
-        android:launchMode="standard"
+                  android:screenOrientation="portrait"
         >
 
         </activity>

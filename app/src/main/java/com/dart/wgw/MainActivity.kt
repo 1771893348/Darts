@@ -3,11 +3,14 @@ package com.dart.wgw
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Button
 import com.dart.wgw.R.id.sample_text
 import com.dart.wgw.module.dartsround.DartsRoundGame
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
+
+    lateinit var sample_text:Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -15,6 +18,7 @@ class MainActivity : AppCompatActivity() {
 
         // Example of a call to a native method
 //        sample_text.text = stringFromJNI()
+        sample_text = findViewById(R.id.sample_text)
         sample_text.setOnClickListener {
             var intent = Intent(this,DartsRoundGame::class.java)
             startActivity(intent)
