@@ -63,6 +63,7 @@ class DartsRoundGame: Activity() {
         dart_target!!.setOnClickListener(View.OnClickListener {
             //                dart_target.setHighlight("25","",0);
             if (!mThread!!.threadState) {
+                dart_target!!.setDartX(0)
                 mThread!!.threadState = true
                 mThread!!.start()
                 var afd: AssetFileDescriptor? = null

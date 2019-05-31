@@ -1,6 +1,7 @@
 package com.dart.wgw.view;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.*;
 import android.util.AttributeSet;
@@ -48,6 +49,8 @@ public class DartTarget extends View {
     private int scoreSerial=-1;
     private int areaSerial = -1;
     private int mScore = -1;
+    private int dartX = 0;
+    private Bitmap dartBitmap;
     /**
      * 格式化小数点
      */
@@ -70,6 +73,9 @@ public class DartTarget extends View {
         obtainStyledAttrs(attrs);
         //初始化画笔
         initPaint();
+        dartBitmap = turnDrawable(R.drawable.darts1);
+
+
         // 为画布实现抗锯齿
         mDrawFilter = new PaintFlagsDrawFilter(0, Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
 
@@ -90,7 +96,9 @@ public class DartTarget extends View {
             }
         }
     }
-
+    public void setDartX(int x){
+        dartX = x;
+    }
     private int count=10;
     public void setHighlight(String score,String area){
         if (null==score||score.equals("")){
@@ -165,13 +173,14 @@ public class DartTarget extends View {
             scoreSerial=-1;
             areaSerial = -1;
         }
-
+        dartX = dartX+20;
         count=light*2;
         if (count>0){
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     while (count>0){
+
                         postInvalidate();
                         count--;
                         try {
@@ -249,9 +258,9 @@ public class DartTarget extends View {
         canvas.setDrawFilter(mDrawFilter);
         // 绘制半径圆
         drawCircle(canvas);
-        // 绘制刻度尺
         printScale(canvas);
         paintPie(canvas);
+        paintDart(canvas);
 //        // 绘制指针
 //        printPointer(canvas);
 //        // 每一秒刷新一次
@@ -390,6 +399,14 @@ public class DartTarget extends View {
             mCanvas.drawCircle(width / 2, width / 2, side / 48, mPaint);
 
     }
+    Matrix matrix = new Matrix();
+    private void paintDart(final Canvas mCanvas){
+        int y = dartX;
+        matrix.setRotate(45,0,dartBitmap.getHeight()/2);
+        matrix.postTranslate(dartX,y);
+        Log.d("wgw_paintDart","===="+dartX);
+        mCanvas.drawBitmap(dartBitmap,matrix,mPaint);
+    }
     private void drawCircle(Canvas canvas) {
 
         if (mScore == 0&&count%2==0){
@@ -408,6 +425,12 @@ public class DartTarget extends View {
 
     private float DptoPx(int value) {
         return SizeUtils.Dp2Px(getContext(), value);
+    }
+
+    private Bitmap turnDrawable(int drawable){
+        Resources res = getResources();
+        Bitmap bmp = BitmapFactory.decodeResource(res, drawable);
+        return bmp;
     }
 
 
