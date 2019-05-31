@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.*;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -49,16 +51,18 @@ public class DartTarget extends View {
     private int scoreSerial=-1;
     private int areaSerial = -1;
     private int mScore = -1;
-    private int dartX = 0;
-    private Bitmap dartBitmap;
+    private float dartX = 0;
+    private Bitmap dartBitmap = null;
     /**
      * 格式化小数点
      */
     private DecimalFormat dff;
     private RectF oval;
+    private Context mContext;
     private ArrayList<Integer> colors = new ArrayList<>();
 
     public DartTarget(Context context) {
+
         this(context, null);
     }
 
@@ -68,14 +72,14 @@ public class DartTarget extends View {
 
     public DartTarget(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-
+        mContext = context;
         // 获取属性
         obtainStyledAttrs(attrs);
         //初始化画笔
         initPaint();
-        dartBitmap = turnDrawable(R.drawable.darts1);
 
 
+//        dartBitmap = getBitmap(mContext,R.drawable.darts1);
         // 为画布实现抗锯齿
         mDrawFilter = new PaintFlagsDrawFilter(0, Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
 
@@ -98,6 +102,9 @@ public class DartTarget extends View {
     }
     public void setDartX(int x){
         dartX = x;
+    }
+    public void setDartBitmap(Bitmap bmp){
+        dartBitmap = bmp;
     }
     private int count=10;
     public void setHighlight(String score,String area){
@@ -131,12 +138,20 @@ public class DartTarget extends View {
             areaSerial = -1;
         }
         count=10;
+        double x = (width/2-80)*(1+Math.sin(18*scoreSerial *Math.PI/180.0));
+        Log.d("wgw_x",x+"---"+scoreSerial+"==="+Math.sin(18*scoreSerial*Math.PI/180.0));
         new Thread(()->{
             while (count>0){
                 postInvalidate();
                 count--;
+
+                dartX = (float) (dartX+x/10);
+                if (dartX>=x){
+                    dartX = (float) x;
+                    count = 0;
+                }
                 try {
-                    sleep(1000);
+                    sleep(500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -173,7 +188,7 @@ public class DartTarget extends View {
             scoreSerial=-1;
             areaSerial = -1;
         }
-        dartX = dartX+20;
+//       dartX = dartX +10;
         count=light*2;
         if (count>0){
             new Thread(new Runnable() {
@@ -260,7 +275,10 @@ public class DartTarget extends View {
         drawCircle(canvas);
         printScale(canvas);
         paintPie(canvas);
-        paintDart(canvas);
+        if (null != dartBitmap){
+            paintDart(canvas);
+        }
+
 //        // 绘制指针
 //        printPointer(canvas);
 //        // 每一秒刷新一次
@@ -401,10 +419,16 @@ public class DartTarget extends View {
     }
     Matrix matrix = new Matrix();
     private void paintDart(final Canvas mCanvas){
-        int y = dartX;
+
+        double x1 = (width/2-20)*(1+Math.sin((18*scoreSerial)*Math.PI/180.0));
+        double y1 = (width/2-20)*(1-Math.cos((18*scoreSerial)*Math.PI/180.0));
+        double a = y1/x1;
+        Log.d("wgw_paintDart","x1==="+x1+"==y1=="+y1+"==a=="+a);
+        float y = (float) (a*dartX);
+
         matrix.setRotate(45,0,dartBitmap.getHeight()/2);
         matrix.postTranslate(dartX,y);
-        Log.d("wgw_paintDart","===="+dartX);
+        Log.d("wgw_paintDart",a+"===="+dartX+"---y="+y);
         mCanvas.drawBitmap(dartBitmap,matrix,mPaint);
     }
     private void drawCircle(Canvas canvas) {
@@ -433,5 +457,19 @@ public class DartTarget extends View {
         return bmp;
     }
 
+    private static Bitmap getBitmap(Context context,int vectorDrawableId) {
+        Bitmap bitmap=null;
+        if (Build.VERSION.SDK_INT> Build.VERSION_CODES.LOLLIPOP){
+            Drawable vectorDrawable = context.getDrawable(vectorDrawableId);
+            bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(),
+                    vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bitmap);
+            vectorDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+            vectorDrawable.draw(canvas);
+        }else {
+            bitmap = BitmapFactory.decodeResource(context.getResources(), vectorDrawableId);
+        }
+        return bitmap;
+    }
 
 }

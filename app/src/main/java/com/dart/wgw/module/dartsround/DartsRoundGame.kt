@@ -7,6 +7,7 @@ import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.View
 import com.dart.wgw.R
+import com.dart.wgw.util.Funs
 import com.dart.wgw.util.MediaPlayerSound
 import com.dart.wgw.view.DartTarget
 import java.io.IOException
@@ -80,6 +81,14 @@ class DartsRoundGame: Activity() {
                 }
 
             }
+//            val index = mRandom!!.nextInt(scoreArea.size)
+//            val indexMul = mRandom!!.nextInt(scoreMultiple.size)
+//            val mScore = scoreArea[index]
+//            val mTimes = scoreMultiple[indexMul]
+//            dart_target!!.setDartX(0)
+//            dart_target!!.setDartBitmap(Funs.getBitmap(this,R.drawable.darts1))
+//            dart_target!!.setHighlight("18","d")
+
             //                else {
             //                    mThread.stopLight();
             //                }
