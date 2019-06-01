@@ -1,5 +1,6 @@
 package com.dart.wgw.module.fragment
 
+import com.dart.wgw.R
 import com.dart.wgw.module.fragment.base.BaseLazyFragment
 
 /**
@@ -8,6 +9,10 @@ import com.dart.wgw.module.fragment.base.BaseLazyFragment
  * 描述：
  */
 class DartsNoTargetFragment: BaseLazyFragment(){
+    override fun layout(): Int {
+        return R.layout.fragment_darts_no_target;
+    }
+
     override fun lazyLoad() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }

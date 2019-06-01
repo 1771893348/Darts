@@ -4,14 +4,21 @@
               xmlns:app="http://schemas.android.com/apk/res-auto"
               android:id="@+id/activity_main"
               android:layout_width="match_parent"
-              android:gravity="center"
-              android:layout_height="match_parent">
+              android:layout_height="match_parent"
+              android:gravity="center_horizontal"
+              android:orientation="vertical">
     <com.dart.wgw.view.DartTarget
             android:id="@+id/dart_target"
             android:layout_width="match_parent"
             android:layout_height="300dp"
             android:background="@color/colorPrimary"
             app:wb_scale_short_color="@color/colorAccent"/>
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/btn_dart_move"
+                android:text="飞镖"/>
+    </LinearLayout>
     <!--<com.example.jmf.timetest.WatchBoard-->
     <!--android:layout_width="match_parent"-->
     <!--android:layout_height="300dp"-->

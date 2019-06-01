@@ -138,7 +138,19 @@ public class DartTarget extends View {
             areaSerial = -1;
         }
         count=10;
-        double x = (width/2-80)*(1+Math.sin(18*scoreSerial *Math.PI/180.0));
+        if ( areaSerial==4){
+            radius = width/2 - width/12;
+        }
+        if (areaSerial==3){
+            radius = width/2 - width/8;
+        }
+        if (areaSerial==2){
+            radius = width/2 - width/4;
+        }
+        if (areaSerial==1){
+            radius = width/2 - width*8/24;
+        }
+        double x = radius*(1+Math.sin(18*scoreSerial *Math.PI/180.0));
         Log.d("wgw_x",x+"---"+scoreSerial+"==="+Math.sin(18*scoreSerial*Math.PI/180.0));
         new Thread(()->{
             while (count>0){
@@ -362,11 +374,10 @@ public class DartTarget extends View {
                 int num = 1;
                 float needDrawAngle = num * 1.0f / 20 * 360;
                 if (needDrawAngle >= 0) {
-
-
                     mPaint.setColor(i%2==0?colors.get(1):colors.get(2));
                     if (i == scoreSerial+1 && areaSerial==4&&count%2==0){
                         mPaint.setColor(Color.GREEN);
+//                        radius = side/2 - side/12-side/24;
                     }
                     oval = new RectF(side/12, side/12, side-side/12, side-side/12);
                     mCanvas.drawArc(oval, currentAngle, needDrawAngle - 1, true, mPaint);
@@ -374,6 +385,7 @@ public class DartTarget extends View {
                     mPaint.setColor(i%2==0?colors.get(3):colors.get(4));
                     if (i == scoreSerial+1 && areaSerial==3&&count%2==0){
                         mPaint.setColor(Color.GREEN);
+//                        radius = side/2 - side/8-side/16;
                     }
                     oval = new RectF(side/8, side/8, side-side/8, side-side/8);
                     mCanvas.drawArc(oval, currentAngle, needDrawAngle - 1, true, mPaint);
@@ -381,6 +393,7 @@ public class DartTarget extends View {
                     mPaint.setColor(i%2==0?colors.get(5):colors.get(6));
                     if (i == scoreSerial+1 && areaSerial==2&&count%2==0){
                         mPaint.setColor(Color.GREEN);
+//                        radius = side/2 - side/4-side/24;
                     }
                     oval = new RectF(side/4, side/4, side-side/4, side-side/4);
                     mCanvas.drawArc(oval, currentAngle, needDrawAngle - 1, true, mPaint);
@@ -388,6 +401,7 @@ public class DartTarget extends View {
                     mPaint.setColor(i%2==0?colors.get(7):colors.get(8));
                     if (i == scoreSerial+1 && areaSerial==1&&count%2==0){
                         mPaint.setColor(Color.GREEN);
+//                        radius = side/2 - side*7/24-side/24;
                     }
                     oval = new RectF(side*7/24, side*7/24, side-side*7/24, side-side*7/24);
                     mCanvas.drawArc(oval, currentAngle, needDrawAngle - 1, true, mPaint);
@@ -418,10 +432,12 @@ public class DartTarget extends View {
 
     }
     Matrix matrix = new Matrix();
+    private int radius = width/2-width/12;
     private void paintDart(final Canvas mCanvas){
 
-        double x1 = (width/2-20)*(1+Math.sin((18*scoreSerial)*Math.PI/180.0));
-        double y1 = (width/2-20)*(1-Math.cos((18*scoreSerial)*Math.PI/180.0));
+        float r = radius;
+        double x1 = r*(1+Math.sin((18*scoreSerial)*Math.PI/180.0));
+        double y1 = r*(1-Math.cos((18*scoreSerial)*Math.PI/180.0));
         double a = y1/x1;
         Log.d("wgw_paintDart","x1==="+x1+"==y1=="+y1+"==a=="+a);
         float y = (float) (a*dartX);

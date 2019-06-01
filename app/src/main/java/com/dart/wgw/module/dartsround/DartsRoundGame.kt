@@ -6,6 +6,7 @@ import android.media.AudioManager
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import com.dart.wgw.R
 import com.dart.wgw.util.Funs
 import com.dart.wgw.util.MediaPlayerSound
@@ -23,6 +24,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 class DartsRoundGame: Activity() {
     private var dart_target: DartTarget? = null
     private var mRandom: Random? = null
+    private var btn_dart_move:Button?=null
     private val scoreArea = arrayOf(
         "20",
         "1",
@@ -57,10 +59,20 @@ class DartsRoundGame: Activity() {
         setContentView(R.layout.activity_dartsround)
         mRandom = Random()
         dart_target = findViewById<View>(R.id.dart_target) as DartTarget
+        btn_dart_move = findViewById(R.id.btn_dart_move) as Button
         mThread = MyThread()
         mMediaPlayerSound = MediaPlayerSound(this)
         mediaPlayer = MediaPlayer()
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)// 设置媒体流类型
+        btn_dart_move!!.setOnClickListener({
+            val index = mRandom!!.nextInt(scoreArea.size)
+            val indexMul = mRandom!!.nextInt(scoreMultiple.size)
+            val mScore = scoreArea[index]
+            val mTimes = scoreMultiple[indexMul]
+            dart_target!!.setDartX(0)
+            dart_target!!.setDartBitmap(Funs.getBitmap(this,R.drawable.darts1))
+            dart_target!!.setHighlight("7","a")
+        })
         dart_target!!.setOnClickListener(View.OnClickListener {
             //                dart_target.setHighlight("25","",0);
             if (!mThread!!.threadState) {
