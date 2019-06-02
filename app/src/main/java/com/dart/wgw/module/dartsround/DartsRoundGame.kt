@@ -23,6 +23,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 class DartsRoundGame: Activity() {
     private var dart_target: DartTarget? = null
+    private var btn_dart_round:Button?=null
     private var mRandom: Random? = null
     private var btn_dart_move:Button?=null
     private val scoreArea = arrayOf(
@@ -60,6 +61,7 @@ class DartsRoundGame: Activity() {
         mRandom = Random()
         dart_target = findViewById<View>(R.id.dart_target) as DartTarget
         btn_dart_move = findViewById(R.id.btn_dart_move) as Button
+        btn_dart_round = findViewById(R.id.btn_dart_round) as Button
         mThread = MyThread()
         mMediaPlayerSound = MediaPlayerSound(this)
         mediaPlayer = MediaPlayer()
@@ -71,12 +73,13 @@ class DartsRoundGame: Activity() {
             val mTimes = scoreMultiple[indexMul]
             dart_target!!.setDartX(0)
             dart_target!!.setDartBitmap(Funs.getBitmap(this,R.drawable.darts1))
-            dart_target!!.setHighlight("7","a")
+            dart_target!!.setHighlight(mScore,mTimes)
         })
         dart_target!!.setOnClickListener(View.OnClickListener {
             //                dart_target.setHighlight("25","",0);
             if (!mThread!!.threadState) {
                 dart_target!!.setDartX(0)
+                dart_target!!.setDartBitmap(null)
                 mThread!!.threadState = true
                 mThread!!.start()
                 var afd: AssetFileDescriptor? = null
@@ -105,6 +108,27 @@ class DartsRoundGame: Activity() {
             //                    mThread.stopLight();
             //                }
             //                dart_target.setHighlight("0","a");
+        })
+        btn_dart_round!!.setOnClickListener(View.OnClickListener {
+            if (!mThread!!.threadState) {
+                dart_target!!.setDartX(0)
+                dart_target!!.setDartBitmap(null)
+                mThread!!.threadState = true
+                mThread!!.start()
+                var afd: AssetFileDescriptor? = null
+                try {
+                    afd = assets.openFd("broadcast/bj_music.MP3")
+                    mediaPlayer.reset()
+                    mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
+                    mediaPlayer.setDataSource(afd!!.fileDescriptor, afd!!.startOffset, afd!!.length)
+                    mediaPlayer.prepare()
+                    mediaPlayer.isLooping = true
+                    mediaPlayer.start()
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+
+            }
         })
     }
 

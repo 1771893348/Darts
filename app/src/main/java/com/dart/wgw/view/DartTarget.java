@@ -138,30 +138,42 @@ public class DartTarget extends View {
             areaSerial = -1;
         }
         count=10;
+        //算半径
         if ( areaSerial==4){
-            radius = width/2 - width/12;
+            radius = width/2 - width/12-width/48;
         }
         if (areaSerial==3){
-            radius = width/2 - width/8;
+            radius = width/2 - width/8- width/16;
         }
         if (areaSerial==2){
-            radius = width/2 - width/4;
+            radius = width/2 - width/4-width/48;
         }
         if (areaSerial==1){
-            radius = width/2 - width*8/24;
+            radius = width/2 - width*7/24- width/32;
         }
-        double x = radius*(1+Math.sin(18*scoreSerial *Math.PI/180.0));
-        Log.d("wgw_x",x+"---"+scoreSerial+"==="+Math.sin(18*scoreSerial*Math.PI/180.0));
+//        double x = radius*(1+Math.sin(18*scoreSerial *Math.PI/180.0));
+        if (mScore == 0 ){
+            finalX = width/2-width/12;
+        }else if(mScore == 25){
+            finalX = width/2 -width/12- 10;
+        }else if (mScore == 50){
+            finalX = width/2-width/12;
+        }else {
+            finalX = width/2   +   radius   *   Math.cos((18*scoreSerial-90)*Math.PI/180.0)-width/12;
+        }
+
+        Log.d("wgw_x",finalX+"---"+scoreSerial+"==="+Math.sin(18*scoreSerial*Math.PI/180.0));
+        dartX=0;
         new Thread(()->{
             while (count>0){
                 postInvalidate();
                 count--;
-
-                dartX = (float) (dartX+x/10);
-                if (dartX>=x){
-                    dartX = (float) x;
+                dartX = (float) (dartX+finalX/10);
+                if (dartX>=finalX){
+                    dartX = (float) finalX;
                     count = 0;
                 }
+                postInvalidate();
                 try {
                     sleep(500);
                 } catch (InterruptedException e) {
@@ -433,14 +445,32 @@ public class DartTarget extends View {
     }
     Matrix matrix = new Matrix();
     private int radius = width/2-width/12;
+    double finalX = 0;
     private void paintDart(final Canvas mCanvas){
 
         float r = radius;
-        double x1 = r*(1+Math.sin((18*scoreSerial)*Math.PI/180.0));
-        double y1 = r*(1-Math.cos((18*scoreSerial)*Math.PI/180.0));
+//        double x1 = r*(1+Math.sin((18*scoreSerial)*Math.PI/180.0));
+//        double y1 = r*(1-Math.cos((18*scoreSerial)*Math.PI/180.0));
+//        角度:angle (角度是相对于图中红点位置而言，逆时针为负数，顺时针为正)
+//        double x1   =   width/2   +   r   *   Math.cos(Math.toRadians(18*scoreSerial-90));
+        double x1 = finalX;
+        double y1   =   width/2   +   r   *   Math.sin(Math.toRadians(18*scoreSerial-90))-width/12;
+        if (mScore == 0 ){
+            y1 = width/12-width/12;
+        }else if(mScore == 25){
+            y1 = width/2 - 10-width/12;
+        }else if (mScore == 50){
+            y1 = width/2-width/12;
+        }
+//        圆心坐标：(x0,y0)
+//        double x1   =   x0   +   r   *   cos(a   *   PI   /180   )
+//        double y1   =   y0   +   r   *   sin(a   *   PI  /180   )
         double a = y1/x1;
         Log.d("wgw_paintDart","x1==="+x1+"==y1=="+y1+"==a=="+a);
         float y = (float) (a*dartX);
+//        if (dartX == x1){
+//            y= (float) y1;
+//        }
 
         matrix.setRotate(45,0,dartBitmap.getHeight()/2);
         matrix.postTranslate(dartX,y);
