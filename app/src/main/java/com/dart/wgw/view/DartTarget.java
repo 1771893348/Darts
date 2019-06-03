@@ -175,7 +175,7 @@ public class DartTarget extends View {
                 }
                 postInvalidate();
                 try {
-                    sleep(500);
+                    sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -446,9 +446,11 @@ public class DartTarget extends View {
     Matrix matrix = new Matrix();
     private int radius = width/2-width/12;
     double finalX = 0;
+    int b=0;
     private void paintDart(final Canvas mCanvas){
 
         float r = radius;
+        float degress = 45;
 //        double x1 = r*(1+Math.sin((18*scoreSerial)*Math.PI/180.0));
 //        double y1 = r*(1-Math.cos((18*scoreSerial)*Math.PI/180.0));
 //        角度:angle (角度是相对于图中红点位置而言，逆时针为负数，顺时针为正)
@@ -465,14 +467,16 @@ public class DartTarget extends View {
 //        圆心坐标：(x0,y0)
 //        double x1   =   x0   +   r   *   cos(a   *   PI   /180   )
 //        double y1   =   y0   +   r   *   sin(a   *   PI  /180   )
-        double a = y1/x1;
+        double a = (y1-b)/x1;
         Log.d("wgw_paintDart","x1==="+x1+"==y1=="+y1+"==a=="+a);
-        float y = (float) (a*dartX);
+        float y = (float) (a*dartX)+b;
 //        if (dartX == x1){
 //            y= (float) y1;
 //        }
-
-        matrix.setRotate(45,0,dartBitmap.getHeight()/2);
+        if (mScore == 0 ){
+            y = -width/24;
+        }
+        matrix.setRotate(degress,0,dartBitmap.getHeight()/2);
         matrix.postTranslate(dartX,y);
         Log.d("wgw_paintDart",a+"===="+dartX+"---y="+y);
         mCanvas.drawBitmap(dartBitmap,matrix,mPaint);
